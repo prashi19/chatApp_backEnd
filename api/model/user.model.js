@@ -90,5 +90,65 @@ userModel.prototype.registration = (body, callback) => {
       }
     }
   );
-};
+}
+
+userModel.prototype.forgotPassword = (data, callback) => {
+  user.findOne({ Email: data.body.Email }, (err, result) => {
+  if (err) {
+  callback(err);
+  } else {
+  if (result !== null) {
+  // console.log("model===>", result);
+  callback(null, result);
+  } else {
+  callback("incorrect mail");
+  }
+  }
+  });
+  }
+
+
+  userModel.prototype.updateUserPassword = (req, callback) => {
+  let newPassword = bcrypt.hashSync(req.body.Password, saltRounds);
+  console.log("new pass bcrypt--", newPassword);
+  user.updateOne(
+  { _id: req.decoded.payload.user_id },
+  { Password: newPassword },
+  (err, result) => {
+  if (err) {
+  callback(err);
+  } else {
+  callback(null, result);
+  }
+  }
+  );
+  };
+
+  userModel.prototype.findUserEmail = (data, callback) => {
+    user.findOne({ "Email": data.Email }, (err, result) => {
+        if (err) {
+            callback(err);
+        }
+        else {
+            if (result !== null && data.Email == result.Email) {
+                callback(null, result);
+            }
+            else {
+                callback("incorect mail")
+            }
+        }
+    });
+}
+/**
+ * get all users into the database using find()
+ */
+userModel.prototype.getAllUsers = (callback) => {
+    user.find({}, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, result);
+        }
+    });
+}
 module.exports = new userModel();

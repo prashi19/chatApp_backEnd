@@ -17,13 +17,14 @@ app.use(bodyParser.json());
 var expressValidator = require('express-validator')
 app.use(expressValidator());
 
+const chatControllers=require("../Server/api/controllers/chat.controllers")
 // Configuring the database
 const databaseConfig = require("../Server/configuration/database.configuration");
 
 // Import Mongoose
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-
+require ('dotenv').config();
 // Connecting to the database
 mongoose
   .connect(databaseConfig.url, {
@@ -43,12 +44,38 @@ app.use("/", router);
 // define a simple route
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcome to chatt App"
+    message: "Welcome to chat App"
   });
 });
 
 // listen for requests
-app.listen(4000, () => {
+const server = app.listen(4000, () => {
   console.log("Server is listening on port 4000");
 });
+
+
+const io = require('socket.io').listen(server)
+console.log("socket true")
+io.sockets.on('connection', function (socket) { 
+connections = [];
+connections.push(socket)
+console.log("user connected")
+socket.on('new_msg', function (req) {
+chatControllers.addMessage(req, (err, result) => {
+if (err) {
+console.log("error on server while receiving data");
+}
+io.emit(req.recieverId, result);
+io.emit(req.senderId,result);
+})
+})
+})
+/**
+* socket Disconnect
+**/
+io.on('disconnect', function (data) {
+connections.splice(connections.indexOf(socket), 1)
+console.log("user disconnected");
+
+})
 module.exports = app;
