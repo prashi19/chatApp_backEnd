@@ -1,6 +1,12 @@
+/**
+ * Requiring Bcrypt to create hash of the user password stored in database
+ **/
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 let saltRounds = 10;
+/**
+ * Creating user schema using mongoose
+ **/
 const UserSchema = mongoose.Schema(
   {
     firstName: {
@@ -41,6 +47,9 @@ userModel.prototype.login = (body, callback) => {
     if (err) {
       callback(err);
     } else if (result != null) {
+      /**
+       * Create hash value of user password
+       **/
       bcrypt.compare(body.Password, result.Password).then(res => {
         if (res) {
           console.log("Login Successful");
@@ -56,7 +65,9 @@ userModel.prototype.login = (body, callback) => {
     }
   });
 };
-
+/**
+ * Saving data into database using the user schema
+ **/
 userModel.prototype.registration = (body, callback) => {
   user.find(
     {
@@ -90,65 +101,62 @@ userModel.prototype.registration = (body, callback) => {
       }
     }
   );
-}
+};
 
 userModel.prototype.forgotPassword = (data, callback) => {
   user.findOne({ Email: data.body.Email }, (err, result) => {
-  if (err) {
-  callback(err);
-  } else {
-  if (result !== null) {
-  // console.log("model===>", result);
-  callback(null, result);
-  } else {
-  callback("incorrect mail");
-  }
-  }
+    if (err) {
+      callback(err);
+    } else {
+      if (result !== null) {
+        // console.log("model===>", result);
+        callback(null, result);
+      } else {
+        callback("incorrect mail");
+      }
+    }
   });
-  }
+};
 
-
-  userModel.prototype.updateUserPassword = (req, callback) => {
+userModel.prototype.updateUserPassword = (req, callback) => {
   let newPassword = bcrypt.hashSync(req.body.Password, saltRounds);
   console.log("new pass bcrypt--", newPassword);
   user.updateOne(
-  { _id: req.decoded.payload.user_id },
-  { Password: newPassword },
-  (err, result) => {
-  if (err) {
-  callback(err);
-  } else {
-  callback(null, result);
-  }
-  }
+    { _id: req.decoded.payload.user_id },
+    { Password: newPassword },
+    (err, result) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, result);
+      }
+    }
   );
-  };
+};
 
-  userModel.prototype.findUserEmail = (data, callback) => {
-    user.findOne({ "Email": data.Email }, (err, result) => {
-        if (err) {
-            callback(err);
-        }
-        else {
-            if (result !== null && data.Email == result.Email) {
-                callback(null, result);
-            }
-            else {
-                callback("incorect mail")
-            }
-        }
-    });
-}
+userModel.prototype.findUserEmail = (data, callback) => {
+  user.findOne({ Email: data.Email }, (err, result) => {
+    if (err) {
+      callback(err);
+    } else {
+      if (result !== null && data.Email == result.Email) {
+        callback(null, result);
+      } else {
+        callback("incorect mail");
+      }
+    }
+  });
+};
 /**
  * get all users into the database using find()
  */
-userModel.prototype.getAllUsers = (callback) => {
-    user.find({}, (err, result) => {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, result);
-        }
-    });
-}
+userModel.prototype.getAllUsers = callback => {
+  user.find({}, (err, result) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, result);
+    }
+  });
+};
 module.exports = new userModel();

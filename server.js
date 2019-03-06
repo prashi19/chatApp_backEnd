@@ -12,7 +12,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
-
 //To perform validations
 var expressValidator = require('express-validator')
 app.use(expressValidator());
@@ -70,12 +69,5 @@ io.emit(req.senderId,result);
 })
 })
 })
-/**
-* socket Disconnect
-**/
-io.on('disconnect', function (data) {
-connections.splice(connections.indexOf(socket), 1)
-console.log("user disconnected");
 
-})
 module.exports = app;

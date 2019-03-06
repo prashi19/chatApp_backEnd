@@ -1,81 +1,98 @@
 // Import user model
-const userModel = require('../model/user.model')
+const userModel = require("../model/user.model");
+/**
+ *
+ * @param {*} data
+ * @param {*} callback
+ */
 exports.login = (data, callback) => {
-    try {
-        console.log("services use data:", data);
-        userModel.login(data, (err, result) => {
-            if (err) {
-                console.log("service error");
-                callback(err);
-            }
-            else {
-                console.log("In service", result);
-                callback(null, result);
-            }
-        })
-    } catch (error) {
-        callback.send(error);
-    }
-}
+  try {
+    console.log("services use data:", data);
+    userModel.login(data, (err, result) => {
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        console.log("In service", result);
+        callback(null, result);
+      }
+    });
+  } catch (error) {
+    callback.send(error);
+  }
+};
+/**
+ *
+ * @param {*} data
+ * @param {*} callback
+ */
 exports.registration = (data, callback) => {
-    try {
-        userModel.registration(data, (err, result) => {
-            if (err) {
-                console.log("service error");
-                callback(err);
-            } else {
-                console.log("In service", result);
-                callback(null, result);
-            }
-        })
-    } catch (error) {
-        callback.send(error);
-    }
-}
-
+  try {
+    userModel.registration(data, (err, result) => {
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        console.log("In service", result);
+        callback(null, result);
+      }
+    });
+  } catch (error) {
+    callback.send(error);
+  }
+};
+/**
+ *
+ * @param {*} data
+ * @param {*} callback
+ */
 exports.forgotPassword = (data, callback) => {
-    try {
+  try {
     userModel.forgotPassword(data, (err, result) => {
-    // console.log("result=====",result);
-    if (err) {
-    console.log("service error");
-    callback(err);
-    } else {
-    console.log("In service", result);
-    callback(null, result);
-    }
-    })
-    } catch (error) {
+      // console.log("result=====",result);
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        console.log("In service", result);
+        callback(null, result);
+      }
+    });
+  } catch (error) {
     callback.send(error);
-    }
-    }
-
-
-
-    exports.resetpassword = (req, callback) => {
-    try {
+  }
+};
+/**
+ *
+ * @param {*} req
+ * @param {*} callback
+ */
+exports.resetpassword = (req, callback) => {
+  try {
     userModel.updateUserPassword(req, (err, result) => {
-    if (err) {
-    console.log("service error");
-    callback(err);
-    } else {
-    console.log("In service", result);
-    callback(null, result);
-    }
-    })
-    } catch (error) {
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        console.log("In service", result);
+        callback(null, result);
+      }
+    });
+  } catch (error) {
     callback.send(error);
+  }
+};
+/**
+ *
+ * @param {*} data
+ * @param {*} callback
+ */
+exports.getAllUsers = (data, callback) => {
+  userModel.getAllUsers(data, (err, result) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, result);
     }
-    }
-
-    exports.getAllUsers = (data, callback) => {
-        userModel.getAllUsers(data, (err, result) => {
-            if (err) {
-                callback(err);
-            }
-            else {
-                callback(null, result);
-            }
-        })
-    
-    }
+  });
+};
